@@ -11,9 +11,11 @@ define
    fun {GateMaker F}
       fun {$ Xs Ys}
          fun {GateLoop Xs Ys}
-       case Xs#Ys of (X|Xr)#(Y|Yr) then
-          {F X Y}|{GateLoop Xr Yr}
-       end
+            case Xs#Ys of (X|Xr)#(Y|Yr) then
+               {F X Y}|{GateLoop Xr Yr}
+            else
+               nil
+            end
          end
       in
          thread {GateLoop Xs Ys} end
