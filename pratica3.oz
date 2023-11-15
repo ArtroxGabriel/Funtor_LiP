@@ -1,6 +1,5 @@
 functor
 import
-    Browser
     Porta at 'portaslogicas.ozf'
 export
     mux:Mux4 
@@ -51,11 +50,6 @@ define
             igual(AndEqual.1)#maior(OrMaior.1)
         end
     end
-
-    {Browser.browse {Mux4 [0 1 0 1] [0 1]}}
-    {Browser.browse {Demux4 [1] [1 1]}}
-    {Browser.browse {Comparador [1 1 1 1] [1 1 1 0]}}
-
 
 end
     
