@@ -1,28 +1,61 @@
 functor
 import
     Browser
-    Porta at '/media/artroxgabriel/Selene/UFC/2023.2/LiP/oz/portaslogicas.ozf'
+    Porta at 'portaslogicas.ozf'
 export
-    multiplexador:Mux4 %demultiplexador:Demultplexador 
+    mux:Mux4 
+    demux:Demux4
+    comparar:Comparador
 define
-    fun {Mux4 Entrada Controle} 
-        And1 And2 And3 And4 Saida
-        E1 = Entrada.1
-        E2 = Entrada.2.1
-        E3 = Entrada.2.2.1 
-        E4 = Entrada.2.2.2.1 
-        C1 = Controle.1
-        C2 = Controle.2.1
-    in  
-        And1 = {Porta.portaAnd {Porta.portaNot C1 } {Porta.portaAnd {Porta.portaNot C2} E1 }}
-        And2 = {Porta.portaAnd C1 {Porta.portaAnd {Porta.portaNot C2} E2 }}
-        And3 = {Porta.portaAnd {Porta.portaNot C1 } {Porta.portaAnd C2 E3}}
-        And4 = {Porta.portaAnd C1 {Porta.portaAnd C2 E4 }}
+    % Multiplexador de 4 
+    fun {Mux4 E C}
+        local And0 And1 And2 And3
+        in
+          And0 =  {Porta.portaAnd E.2.2.2.1|nil {Porta.portaAnd {Porta.portaNot C.1|nil} {Porta.portaNot C.2.1|nil}}}
+          And1 =  {Porta.portaAnd E.2.2.1|nil {Porta.portaAnd {Porta.portaNot C.1|nil} C.2.1|nil}}
+          And2 =  {Porta.portaAnd E.2.1|nil {Porta.portaAnd C.1|nil {Porta.portaNot C.2.1|nil}}}
+          And3 =  {Porta.portaAnd E.1|nil {Porta.portaAnd C.1|nil C.2.1|nil}}
         
-        Saida = {Porta.portaOr {Porta.portaOr And1 And2} {Porta.portaOr And3 And4 }}
+                {Porta.portaOr {Porta.portaOr And0 And1} {Porta.portaOr And2 And3}}
+        end 
+     end
+    % Demultiplexador de 4
+    fun {Demux4 E C}
+        local S0 S1 S2 S3
+        in
+            S0 = {Porta.portaAnd E {Porta.portaAnd {Porta.portaNot C.1|nil } {Porta.portaNot C.2.1|nil }}}
+            S1 = {Porta.portaAnd E {Porta.portaAnd {Porta.portaNot C.1|nil } C.2.1|nil }}
+            S2 = {Porta.portaAnd E {Porta.portaAnd C.1|nil {Porta.portaNot C.2.1|nil } }}
+            S3 = {Porta.portaAnd E {Porta.portaAnd C.1|nil C.2.1|nil }}
+            [S0.1 S1.1 S2.1 S3.1]
+        end 
     end 
 
-    
-    {Browser.browse {Mux4 0|0|0|1 1|1}}
+    % Comparador
+    fun {Comparador A B}
+        local AndEqual OrMaior And1 And2 And3 And4 Xor1 Xor2 Xor3 Xor4
+        in
+            Xor1 = {Porta.portaXor A.2.2.2.1|nil {Porta.portaNot B.2.2.2.1|nil}}
+            Xor2 = {Porta.portaXor A.2.2.1|nil {Porta.portaNot B.2.2.1|nil}}
+            Xor3 = {Porta.portaXor A.2.1|nil {Porta.portaNot B.2.1|nil}}
+            Xor4 = {Porta.portaXor A.1|nil {Porta.portaNot B.1|nil}}
+
+            AndEqual = {Porta.portaAnd {Porta.portaAnd Xor1 Xor2 } {Porta.portaAnd Xor3 Xor4 }}
+
+            And1 = {Porta.portaAnd {Porta.portaAnd A.1|nil {Porta.portaNot B.1|nil} } {Porta.portaAnd Xor2 {Porta.portaAnd Xor3 Xor4} }}
+            And2 = {Porta.portaAnd {Porta.portaAnd A.2.1|nil {Porta.portaNot B.2.1|nil} } {Porta.portaAnd Xor3 Xor4 }}
+            And3 = {Porta.portaAnd {Porta.portaAnd A.2.2.1|nil {Porta.portaNot B.2.2.1|nil} } Xor4 }
+            And4 = {Porta.portaAnd A.2.2.2.1|nil {Porta.portaNot B.2.2.2.1|nil} } 
+            OrMaior = {Porta.portaOr {Porta.portaOr And1 And2 } {Porta.portaOr And3 And4 }}
+
+            igual(AndEqual.1)#maior(OrMaior.1)
+        end
+    end
+
+    {Browser.browse {Mux4 [0 1 0 1] [0 1]}}
+    {Browser.browse {Demux4 [1] [1 1]}}
+    {Browser.browse {Comparador [1 1 1 1] [1 1 1 0]}}
+
+
 end
     
