@@ -15,6 +15,15 @@ Para executar o programa, basta executar o comando abaixo no terminal:
 ```bash
 $ ozc -c portaslogicas.oz 
 $ ozc -c pratica3.oz
-$ ozc -c main.oz -o main.ozc
-$ ozengine main.ozc
+$ ozc -c main.oz -o main.ozf
+$ ozengine main.ozf
 ```
+> Ou execute o comando `make && make run`
+<center>
+
+| Nome | 
+|:-:|
+| Jonanthan Aires |
+| Antonio Gabriel |
+
+</center>
