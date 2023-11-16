@@ -1,13 +1,13 @@
 # Makefile for programa Oz
 
 # Lista de arquivos fonte
-SRCS = portaslogicas.oz pratica3.oz
+SRCS = portaslogicas.oz pratica3.oz main.oz
 
 # Lista de arquivos objeto
 OBJS = $(SRCS:.oz=.ozf)
 
 # Nome do executável
-EXEC = pratica3.ozf
+EXEC = main.ozf
 
 # Comando para compilar os arquivos .oz para .ozf
 OZC = ozc -c
